@@ -22,6 +22,12 @@ easy_http is a simple encapsulation of golang's http client and does not rely on
 1.  you can use the below Go command to install
 
     ``` $ go get -u github.com/bruce12397/easy_http```
+    
+2. Import it in your code
+    
+   ```import "github.com/bruce12397/easy_http"```
+        
+        
 #### Instructions
 
 . create a client
