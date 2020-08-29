@@ -30,7 +30,7 @@ easy_http is a simple encapsulation of golang's http client and does not rely on
         
 #### Instructions
 
-. create a client
+###### create a client
 
 ```
 //new A constructor
@@ -86,7 +86,7 @@ fmt.Println(response.StatusCode())
 fmt.Println(string(response.Content()))
 ```
 
-.  post request
+######  post request
 
 ```
 builder := NewClientBuilder()
@@ -102,7 +102,7 @@ data["name2"] = "2222222"
 client.PostForm("http://127.0.0.1:8088", EasyPost(data))
 ```
 
-.  file upload
+######  file upload
 
 ```
 builder := NewClientBuilder()
@@ -126,7 +126,7 @@ if err != nil {
 client.PostMultipart("http://127.0.0.1:8088", multipart)
 ```
 
-.  asynchronous request
+######  asynchronous request
 
 ```
 //function callback
@@ -158,7 +158,7 @@ client.GetAsynWithCallback("http://baidu.com", &Get{})
 ```
 
 
-. Set cookie and header for this request
+###### Set cookie and header for this request
 
 ```
 builder := NewClientBuilder()
@@ -172,7 +172,7 @@ header["Accept-Language"] = "Accept-Language: en,zh"
 client.Cookies(EasyCookie(cookie)).Header(header).Get("http://127.0.0.1:8088/")
 ```
 
-. Custom request
+###### Custom request
 
 ```
 builder := NewClientBuilder()
@@ -186,7 +186,7 @@ response := client.SendWithMethod("http://127.0.0.1:8088", http.MethodGet, nil, 
 fmt.Println(response)
 ```
 
-. Use http native request
+###### Use http native request
 
 ```
 builder := NewClientBuilder()
@@ -207,7 +207,7 @@ if err != nil {
 }
 ```
 
-. easy function use
+###### easy function use
 
 ```
 //Construct the value of the post form

@@ -27,7 +27,7 @@ easy_http是对golang的http client的简单封装,不依赖第三方库
     ```import "github.com/bruce12397/easy_http"```
     
     
- .  创建一个客户端
+######  创建一个客户端
 ```
 //new 一个构造器
 builder := NewClientBuilder()
@@ -80,7 +80,7 @@ fmt.Println(response.Error())
 fmt.Println(response.StatusCode())
 fmt.Println(string(response.Content()))
 ```
- .  post请求
+######  post请求
 ```
 builder := NewClientBuilder()
 client, err := builder.Build()
@@ -95,7 +95,7 @@ data["name2"] = "2222222"
 client.PostForm("http://127.0.0.1:8088", EasyPost(data))
 ```
 
-.  文件上传
+######  文件上传
 
 ```
 builder := NewClientBuilder()
@@ -119,7 +119,7 @@ if err != nil {
 client.PostMultipart("http://127.0.0.1:8088", multipart)
 ```
 
-.  异步请求
+######  异步请求
 
 ```
 //函数回调
@@ -150,7 +150,7 @@ if err != nil {
 client.GetAsynWithCallback("http://baidu.com", &Get{})
 ```
 
-. 为这一次请求 设置 cookie和 header
+###### 为这一次请求 设置 cookie和 header
 
 ```
 builder := NewClientBuilder()
@@ -164,7 +164,7 @@ header["Accept-Language"] = "Accept-Language: en,zh"
 client.Cookies(EasyCookie(cookie)).Header(header).Get("http://127.0.0.1:8088/")
 ```
 
-. 自定义请求
+###### 自定义请求
 
 ```
 builder := NewClientBuilder()
@@ -178,7 +178,7 @@ response := client.SendWithMethod("http://127.0.0.1:8088", http.MethodGet, nil, 
 fmt.Println(response)
 ```
 
-. 使用http 原生的 请求
+###### 使用http 原生的 请求
 
 ```
 builder := NewClientBuilder()
@@ -199,7 +199,7 @@ if err != nil {
 }
 ```
 
-. easy函数 使用
+###### easy函数 使用
 
 ```
 //构造 post form 的 value
