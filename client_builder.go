@@ -16,6 +16,7 @@ import (
 func NewClientBuilder() *ClientBuilder {
 	return &ClientBuilder{
 		skipVerify:    true,
+		openJar:       false,
 		buildResponse: EasyBuildResponse,
 	}
 }
@@ -100,8 +101,8 @@ func (builder *ClientBuilder) Header(header map[string]string) *ClientBuilder {
 	return builder
 }
 
-func (builder *ClientBuilder) Jar(open bool, options *cookiejar.Options) *ClientBuilder {
-	builder.openJar = open
+func (builder *ClientBuilder) Jar(options *cookiejar.Options) *ClientBuilder {
+	builder.openJar = true
 	builder.jarOptions = options
 	return builder
 }
