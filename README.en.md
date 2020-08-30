@@ -53,8 +53,9 @@ builder.Cert(certPool[:])
 //set up two way verification certificate
 var tlsPath [1]*TlsPath
 tlsPath[0] = &TlsPath{
-certFile: "D:\\client.pem",
-keyFile:  "D:\\client.key",
+    CertFile: "D:\\client.pem",
+    KeyFile:  "D:\\client.key",
+}
 
 builder.Tls(tlsPath[:])
 
