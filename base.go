@@ -8,7 +8,7 @@ import (
 
 //异步回调的接口
 type ICallBack interface {
-	Call(IResponse)
+	EasyResponseCallback(IResponse)
 }
 
 //request重定向的回调函数
