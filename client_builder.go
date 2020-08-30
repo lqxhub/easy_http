@@ -136,7 +136,7 @@ func (builder *ClientBuilder) Build() (*Client, error) {
 	if builder.tlsPath != nil {
 		certificates := make([]tls.Certificate, len(builder.tlsPath))
 		for i, path := range builder.tlsPath {
-			x509KeyPair, err = tls.LoadX509KeyPair(path.certFile, path.keyFile)
+			x509KeyPair, err = tls.LoadX509KeyPair(path.CertFile, path.KeyFile)
 			if err != nil {
 				return nil, err
 			}

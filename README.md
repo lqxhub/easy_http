@@ -48,8 +48,9 @@ builder.Cert(certPool[:])
 //设置双向校验证书
 var tlsPath [1]*TlsPath
 tlsPath[0] = &TlsPath{
-certFile: "D:\\client.pem",
-keyFile:  "D:\\client.key",
+    CertFile: "D:\\client.pem",
+    KeyFile:  "D:\\client.key",
+}
 
 builder.Tls(tlsPath[:])
 

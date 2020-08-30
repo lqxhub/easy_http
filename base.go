@@ -16,9 +16,9 @@ type CheckRedirect func(req *http.Request, via []*http.Request) error
 
 type TlsPath struct {
 	//cert (pem) 路径
-	certFile string
+	CertFile string
 	//key 路径
-	keyFile string
+	KeyFile string
 }
 
 //构造一个简单的HTTP请求cookie
