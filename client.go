@@ -119,7 +119,7 @@ func (c *Client) GetAsyn(url string, call func(response IResponse)) {
 
 //GET 异步请求,使用接口回调
 func (c *Client) GetAsynWithCallback(url string, call ICallBack) {
-	c.GetAsyn(url, call.call)
+	c.GetAsyn(url, call.Call)
 }
 
 //post 的form请求
@@ -142,7 +142,7 @@ func (c *Client) PostFormAsyn(url string, values url.Values, call func(response 
 
 //Post form 异步请求,使用接口回调
 func (c *Client) PostFormAsynWithCallback(url string, values url.Values, call ICallBack) {
-	c.PostFormAsyn(url, values, call.call)
+	c.PostFormAsyn(url, values, call.Call)
 }
 
 //post 的multipart请求
@@ -161,7 +161,7 @@ func (c *Client) PostMultipartAsyn(url string, body IMultipart, call func(respon
 
 //post 的multipart请求,使用接口回调
 func (c *Client) PostMultipartAsynWithCallback(url string, body IMultipart, call ICallBack) {
-	c.PostMultipartAsyn(url, body, call.call)
+	c.PostMultipartAsyn(url, body, call.Call)
 }
 
 //初始化一个 http.Request, 并填充属性

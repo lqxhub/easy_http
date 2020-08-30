@@ -87,7 +87,7 @@ func call(response IResponse) {
 type Get struct {
 }
 
-func (g Get) call(response IResponse) {
+func (g Get) Call(response IResponse) {
 	fmt.Println(response.Error())
 	fmt.Println(string(response.Content()))
 }
