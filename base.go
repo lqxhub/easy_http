@@ -73,3 +73,13 @@ func EasyPost(values map[string]string) url.Values {
 func EasyPostFromRequest(r *http.Request) {
 	r.Header.Set("Content-Type", HTTP_CONTENT_TYPE_FROM_DATA)
 }
+
+//POST请求中,处理request的函数,设置`Content-Type` 为 json
+func EasyPostJsonRequest(r *http.Request) {
+	r.Header.Set("Content-Type", HTTP_CONTENT_TYPE_JSON)
+}
+
+//POST请求中,处理request的函数,设置`Content-Type` 为 xml
+func EasyPostXmlRequest(r *http.Request) {
+	r.Header.Set("Content-Type", HTTP_CONTENT_TYPE_XML)
+}

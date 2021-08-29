@@ -1,6 +1,10 @@
 package easy_http
 
 import (
+	"bytes"
+	"encoding/json"
+	"encoding/xml"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -89,22 +93,18 @@ func (c *Client) SendWithMethod(url, method string, body io.Reader, req func(req
 //使用异步回调的方式,指定请求的方法,发送请求
 //`req` 参数 可以处理这次请求的request
 //`call` 参数,请求成功后的回调函数
-func (c *Client) SendWithMethodCallBack(url, method string, body io.Reader, req func(request *http.Request), call func(response IResponse)) {
+func (c *Client) SendWithMethodCallBack(url, method string, body io.Reader, req func(request *http.Request), call func(response IResponse)) error {
+	request, err := c.getRequest(method, url, body)
+	if err != nil {
+		return err
+	}
+	if req != nil {
+		req(request)
+	}
 	go func() {
-		request, err := c.getRequest(method, url, body)
-		if err != nil {
-			if call != nil {
-				call(c.buildResponse(nil, err))
-			}
-		} else {
-			if req != nil {
-				req(request)
-			}
-			if call != nil {
-				call(c.buildResponse(c.DoRequest(request)))
-			}
-		}
+		call(c.buildResponse(c.DoRequest(request)))
 	}()
+	return nil
 }
 
 //发起GET 请求
@@ -113,13 +113,13 @@ func (c *Client) Get(url string) IResponse {
 }
 
 //GET 异步请求,使用回调函数
-func (c *Client) GetAsyn(url string, call func(response IResponse)) {
-	c.SendWithMethodCallBack(url, http.MethodGet, nil, nil, call)
+func (c *Client) GetAsyn(url string, call func(response IResponse)) error {
+	return c.SendWithMethodCallBack(url, http.MethodGet, nil, nil, call)
 }
 
 //GET 异步请求,使用接口回调
-func (c *Client) GetAsynWithCallback(url string, call ICallBack) {
-	c.GetAsyn(url, call.EasyResponseCallback)
+func (c *Client) GetAsynWithCallback(url string, call ICallBack) error {
+	return c.GetAsyn(url, call.EasyResponseCallback)
 }
 
 //post 的form请求
@@ -132,17 +132,105 @@ func (c *Client) PostForm(url string, values url.Values) IResponse {
 }
 
 //Post form 异步请求,使用回调函数
-func (c *Client) PostFormAsyn(url string, values url.Values, call func(response IResponse)) {
-	var reader io.Reader
-	if values != nil {
-		reader = strings.NewReader(values.Encode())
+func (c *Client) PostFormAsyn(url string, values url.Values, call func(response IResponse)) error {
+	if call == nil {
+		return errors.New("callback function is nil")
 	}
-	c.SendWithMethodCallBack(url, http.MethodGet, reader, EasyPostFromRequest, call)
+	if values == nil {
+		return errors.New("values is nil")
+	}
+	reader := strings.NewReader(values.Encode())
+	return c.SendWithMethodCallBack(url, http.MethodPost, reader, EasyPostFromRequest, call)
 }
 
 //Post form 异步请求,使用接口回调
-func (c *Client) PostFormAsynWithCallback(url string, values url.Values, call ICallBack) {
-	c.PostFormAsyn(url, values, call.EasyResponseCallback)
+func (c *Client) PostFormAsynWithCallback(url string, values url.Values, call ICallBack) error {
+	return c.PostFormAsyn(url, values, call.EasyResponseCallback)
+}
+
+//post 的bytes请求
+func (c *Client) PostBytes(url string, value []byte, req func(request *http.Request)) IResponse {
+	if value == nil {
+		return c.buildResponse(nil, errors.New("PostBytes value is nil"))
+	}
+	reader := bytes.NewReader(value)
+	return c.SendWithMethod(url, http.MethodPost, reader, req)
+}
+
+//post 的bytes请求
+func (c *Client) PostBytesAsyn(url string, value []byte, req func(request *http.Request), call func(response IResponse)) error {
+	if call == nil {
+		return errors.New("callback function is nil")
+	}
+	if value == nil {
+		return errors.New("value is nil")
+	}
+	reader := bytes.NewReader(value)
+	return c.SendWithMethodCallBack(url, http.MethodPost, reader, req, call)
+}
+
+//post 的json请求
+func (c *Client) PostJson(url string, value interface{}) IResponse {
+	if value == nil {
+		return c.buildResponse(nil, errors.New("PostJson value is nil"))
+	}
+	by, err := json.Marshal(value)
+	if err != nil {
+		return c.buildResponse(nil, err)
+	}
+	return c.PostBytes(url, by, EasyPostJsonRequest)
+}
+
+//Post json 异步请求,使用回调函数
+func (c *Client) PostJsonAsyn(url string, value interface{}, call func(response IResponse)) error {
+	if call == nil {
+		return errors.New("callback function is nil")
+	}
+	if value == nil {
+		return errors.New("value is nil")
+	}
+	by, err := json.Marshal(value)
+	if err != nil {
+		return errors.New("value json encode error: " + err.Error())
+	}
+	return c.PostBytesAsyn(url, by, EasyPostJsonRequest, call)
+}
+
+//Post json 异步请求,使用接口回调
+func (c *Client) PostJsonAsynWithCallback(url string, values interface{}, call ICallBack) error {
+	return c.PostJsonAsyn(url, values, call.EasyResponseCallback)
+}
+
+//post 的xml请求
+func (c *Client) PostXml(url string, value interface{}) IResponse {
+	if value == nil {
+		return c.buildResponse(nil, errors.New("PostJson value is nil"))
+	}
+	by, err := xml.Marshal(value)
+	if err != nil {
+		return c.buildResponse(nil, err)
+	}
+	return c.PostBytes(url, by, EasyPostXmlRequest)
+}
+
+//Post xml 异步请求,使用回调函数
+func (c *Client) PostXmlAsyn(url string, value interface{}, call func(response IResponse)) error {
+	if call == nil {
+		return errors.New("callback function is nil")
+	}
+	if value == nil {
+		return errors.New("value is nil")
+	}
+	by, err := json.Marshal(value)
+	if err != nil {
+		return errors.New("value json encode error: " + err.Error())
+	}
+	return c.PostBytesAsyn(url, by, EasyPostXmlRequest, call)
+}
+
+//Post xml 异步请求,使用接口回调
+func (c *Client) PostXmlAsynWithCallback(url string, values interface{}, call ICallBack) error {
+	return c.PostXmlAsyn(url, values, call.EasyResponseCallback)
 }
 
 //post 的multipart请求
@@ -153,15 +241,18 @@ func (c *Client) PostMultipart(url string, body IMultipart) IResponse {
 }
 
 //post 的multipart请求,使用回调函数
-func (c *Client) PostMultipartAsyn(url string, body IMultipart, call func(response IResponse)) {
-	c.SendWithMethodCallBack(url, http.MethodGet, body, func(request *http.Request) {
+func (c *Client) PostMultipartAsyn(url string, body IMultipart, call func(response IResponse)) error {
+	if call == nil {
+		return errors.New("callback function is nil")
+	}
+	return c.SendWithMethodCallBack(url, http.MethodPost, body, func(request *http.Request) {
 		request.Header.Set("Content-Type", body.ContentType())
 	}, call)
 }
 
 //post 的multipart请求,使用接口回调
-func (c *Client) PostMultipartAsynWithCallback(url string, body IMultipart, call ICallBack) {
-	c.PostMultipartAsyn(url, body, call.EasyResponseCallback)
+func (c *Client) PostMultipartAsynWithCallback(url string, body IMultipart, call ICallBack) error {
+	return c.PostMultipartAsyn(url, body, call.EasyResponseCallback)
 }
 
 //初始化一个 http.Request, 并填充属性

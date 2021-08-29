@@ -43,9 +43,6 @@ func TestClient(t *testing.T) {
 	cookie["name"] = "value"
 	builder.Cookie(EasyCookie(cookie))
 
-	//开启cookie jar
-	builder.Jar(true, nil)
-
 	//设置 Response 处理函数
 	builder.BuildResponse(EasyBuildResponse)
 
@@ -64,7 +61,10 @@ func TestClient(t *testing.T) {
 func TestClientGetAsyn(t *testing.T) {
 	builder := NewClientBuilder()
 	client, _ := builder.Build()
-	client.GetAsyn("http://baidu.com", call)
+	err := client.GetAsyn("http://baidu.com", call)
+	if err != nil {
+		panic(err)
+	}
 	time.Sleep(5 * time.Second)
 }
 
@@ -75,7 +75,10 @@ func TestClientGetAsynWithCallback(t *testing.T) {
 		panic(err.Error())
 	}
 
-	client.GetAsynWithCallback("http://baidu.com", &Get{})
+	err = client.GetAsynWithCallback("http://baidu.com", &Get{})
+	if err != nil {
+		panic(err)
+	}
 	time.Sleep(5 * time.Second)
 }
 
